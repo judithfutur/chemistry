@@ -1,0 +1,112 @@
+#Chemical calculations()()()()()
+import math
+import re
+import periodicelements
+
+#The following function are calculating the pH according to the protons concentration
+def pH_from_H3O(H3O_concentration):
+    pH = -(math.log(H3O_concentration))
+
+    return pH
+
+#The following function are calculating the pH according to the hidroxide concentration
+def pH_from_OH(OH_concentration):
+    pOH = -(math.log(OH_concentration))
+    pH = 14 - pOH
+    return pH
+
+#This is calculating the H30+ concentration (a molecule of water plus a proton) from pH
+def H3O_concentration_from_pH(pH):
+    H3O_concentration = 10^-(pH)
+    
+    return H3O_concentration
+
+#This will calculate the pH according to the concentration of a substance
+def pH(substance, concentration):
+    acid_fort = ["HCl", "HBr", "HI", "HClO4", "HNO3", "H2SO4"]
+    base_forta = ["LiOH", "NaOH", "KOH", "RbOH", "Ca(OH)2", "Mg(OH)2", "Ba(OH)2"]
+
+
+
+    if substance in acid_fort:
+        #Àcid dissociat
+        H3O_concentration = concentration
+        pH = pH_from_H3O(H3O_concentration)
+        return pH
+    elif substance in base_forta:
+        OH_concentration = concentration
+        pH = pH_from_OH(OH_concentration)
+        return pH
+
+#This function is telling you what acids and bases are according to the following theories.
+def acids_bases_teories(nom, acids_o_bases):
+    if nom == "Arrhenius":
+        return """Electròlit: Substància que es descompon en ions al dissoldre-la en aigua. 
+                Àcids són electròlits que al dissoldre'ls en aigua es dissocien i alliberen ions d'hidrogen(H+)
+                Bases són electròlits que al dissoldre'ls en aigua es dissocien i alliberen ions d'hidròxid(OH-)
+                
+                
+                Límits: Només (aq), base ha de tenir OH-, àcid H+"""
+    
+    elif nom == "Brönsted-Lowry":
+        return """Àcids: substàncies que tendeixen a cedir protons (H+)
+                Bases: substàncies que tendeixen a acceptar protons.
+                
+                Límits: no explica caràcter substàncies sense protons"""
+
+    elif nom == "Lewis":
+        return """Àcids: substàncies que poden acceptar un parell d'electrons
+                Bases: substàncies que poden cedir un parell d'electrons
+                
+                Totes les substàncies que segons les altres teories són àcids o 
+                bases també ho són segons la teoria de Lewis. """
+         
+
+acids = ["HBrO4", "HF", "CH3_COOH", "NH4+", "HNO3" ]
+
+#When an acid loses a proton, it remains the conjugate base
+def bases_conjugades(acid):
+    clean_formula = acid.rstrip('+-')
+    atoms = re.findall(r'[A-Z][a-z]?', clean_formula)
+
+    
+    if acid[0] == "H":
+        base_conj = acid[:0] + acid[0 + 1:] + "-"
+
+    elif acid[-1] == "H":
+        base_conj = acid[:-1] + "-"
+
+    elif atoms[-1] == "H":
+        base_conj1 = acid.rstrip('+-')
+        if base_conj1[-1].isnumeric():
+            numb = int(base_conj1[-1])
+            new_num = str(numb - 1)
+            base_conj = base_conj1[:-1] + new_num
+
+    return base_conj
+
+#for acid in acids:
+    #print(acid, ";" , bases_conjugades(acid))
+
+
+
+
+bases = ["S2-", "CN-", "KOH", "HCOO-", "Cl-"]
+#When a base accepts a proton, it remains the acid conjugate
+
+def get_conjugate_acid(base):
+    # Dictionary for common bases with known conjugate acids
+    known_acids = {
+        "S2-": "HS⁻",       # Adding one H⁺ to form HS⁻
+        "HS-": "H2S",       # Adding another H⁺ to form H2S
+        "CN-": "HCN",
+        "KOH": "K+",       # Conjugate acid of OH⁻ is H2O
+        "HCOO-": "HCOOH",   # Formic acid
+        "Cl-": "HCl",       # Hydrochloric acid
+        "NaOH": "Na+"
+    }
+    
+    return known_acids.get(base, "Unknown conjugate acid")
+
+#for base in bases:
+#    print(f"Conjugate acid of {base}: {get_conjugate_acid(base)}")
